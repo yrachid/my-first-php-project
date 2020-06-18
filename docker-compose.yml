@@ -1,0 +1,26 @@
+version: '2.0'
+services:
+  database:
+    image: mysql:8
+    container_name: locadora-db
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - .:/application
+      - ${PWD}/db-backups:/docker-entrypoint-initdb.d
+    restart: always
+    environment:
+      - MYSQL_DATABASE=locadora
+      - MYSQL_USER=novousuario
+      - MYSQL_PASSWORD=qi
+      - MYSQL_ROOT_PASSWORD=r00t
+    ports:
+      - "8082:3306"
+  web:
+    container_name: locadora-app
+    build: .
+    volumes:
+      - ${PWD}/src:/var/www/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - database
